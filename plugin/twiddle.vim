@@ -33,7 +33,7 @@ function! TwiddleArguments()
 endfunction
 
 nnoremap <silent> <Plug>TwiddleArguments :<C-U>call TwiddleArguments()<CR>
-nnoremap <unique> <leader>a <Plug>TwiddleArguments
+nmap <unique> <leader>a <Plug>TwiddleArguments
 
 let &cpo = s:cpo_save
 
