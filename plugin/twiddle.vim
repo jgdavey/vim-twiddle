@@ -14,7 +14,8 @@ let s:cpo_save = &cpo
 set cpo&vim
 
 function! TwiddleArguments()
-  if !search(',', 'cnW')
+  let ln = line('.')
+  if !search(',', 'cnW', ln)
     return
   endif
 
@@ -24,7 +25,9 @@ function! TwiddleArguments()
   let reg2type = getregtype('a')
   let save_cursor = getpos(".")
 
-  normal "qdiw"adwep"qp
+  call setpos('.', searchpos(",", "cW", ln))
+
+  normal h"qdiw"adwep"qp
 
   call setpos('.', save_cursor)
   call setreg('q', reg1, reg1type)
