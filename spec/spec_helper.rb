@@ -1,6 +1,10 @@
 require 'tmpdir'
 require 'vimrunner'
 
+Vimrunner::Server.class_eval do
+  attr_reader :pid
+end
+
 VIM = Vimrunner.start
 
 RSpec.configure do |config|
@@ -19,5 +23,6 @@ RSpec.configure do |config|
 
   config.after(:suite) do
     VIM.kill
+    Process.kill(6, VIM.server.pid)
   end
 end
