@@ -6,37 +6,33 @@
 " ============================================================================
 
 if (exists("g:loaded_twiddle") && g:loaded_twiddle) || &cp
-  finish
+  " finish
 endif
 let g:loaded_twiddle = 1
 
 let s:cpo_save = &cpo
 set cpo&vim
 
-function! TwiddleArguments()
-  let ln = line('.')
-  if !search(',', 'cnW', ln)
+function! TwiddleArguments() abort
+  let cursor_pos = getpos(".")
+  let [lin, comma_col] = searchpos(',', 'cnW', line('.'))
+  if comma_col == 0
     return
   endif
 
-  let reg1 = getreg('q')
-  let reg1type = getregtype('q')
-  let reg2 = getreg('a')
-  let reg2type = getregtype('a')
-  let save_cursor = getpos(".")
+  normal! eb
+  let col = col(".")
+  let word = escape(strpart(getline('.'), col - 1, comma_col - col), '(.)')
+  echo word
 
-  call setpos('.', searchpos(",", "cW", ln))
+  exec ':s/\v('.word.')(,\s*)([^,\)]+)/\3\2\1/'
 
-  normal h"qdiw"adwep"qp
-
-  call setpos('.', save_cursor)
-  call setreg('q', reg1, reg1type)
-  call setreg('a', reg2, reg2type)
+  call setpos('.', cursor_pos)
   silent! call repeat#set("\<Plug>TwiddleArguments", -1)
 endfunction
 
 nnoremap <silent> <Plug>TwiddleArguments :<C-U>call TwiddleArguments()<CR>
-nmap <unique> <leader>a <Plug>TwiddleArguments
+nmap <leader>a <Plug>TwiddleArguments
 
 let &cpo = s:cpo_save
 
